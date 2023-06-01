@@ -18,6 +18,12 @@ public class BookService {
     public List<Book> getAllBooks(){
         return bookRepository.findAll();
     }
+    public List<Book> getAllBookss(Integer pageNo,
+                                  Integer pageSize,
+                                  String sortBy) {
+
+        return bookRepository.findAllBooks(pageNo, pageSize, sortBy);
+    }
     public Book getBookId(Long id){
         Optional<Book> optional = bookRepository.findById(id);
         return optional.orElse(null);
@@ -31,13 +37,13 @@ public class BookService {
         bookRepository.save(book);
 
     }
+    public List<Book> searchBook(String keyword) {
+        return bookRepository.searchBook(keyword);
+    }
     public void deleteBook(Long id){
         bookRepository.deleteById(id);
     }
 
-    public List<Book> searchBooks(String keyword) {
-        List<Book> results = bookRepository.findByTitleContainingIgnoreCase(keyword);
-        return results;
-    }
+
 
 }

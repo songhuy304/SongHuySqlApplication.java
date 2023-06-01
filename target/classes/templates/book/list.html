@@ -8,52 +8,90 @@
 <body>
 <th:block th:replace="layout:: header"></th:block>
 <div container>
-  <form method="get" th:action="@{/books/search}">
-    <input  type="text" name="keyword" placeholder="Enter keyword">
-    <button type="submit">Search</button>
+  <form class="d-flex" th:action="@{/books/search}"
+        method="get">
+    <input class="form-control me-2" type="search"
+           placeholder="Search" aria-label="Search" name="keyword">
+    <button class="btn btn-outline-success"
+            type="submit">Search</button>
   </form>
   <table class="table">
     <tr>
-      <th>ID</th>
-      <th>Title</th>
-      <th>Author</th>
-      <th>Price</th>
-      <th>Category</th>
+      <th><a th:href="@{/books(pageNo=${currentPage}, sortBy=
+'id')}">Id</a></th>
+      <th><a th:href="@{/books(pageNo=${currentPage}, sortBy=
+'title')}">Title</a></th>
+      <th><a th:href="@{/books(pageNo=${currentPage}, sortBy=
+'author')}">Author</a></th>
+      <th><a th:href="@{/books(pageNo=${currentPage}, sortBy=
+'price')}">Price</a></th>
+      <th><a th:href="@{/books(pageNo=${currentPage}, sortBy=
+'category')}">Category</a></th>
       <th>Action</th>
     </tr>
     <tr th:each="book : ${books}">
-      <td th:text="${book.id}"></td>
-      <td th:text="${book.title}"></td>
-      <td th:text="${book.author}"></td>
-      <td th:text="${book.price}"></td>
+      <td th:text="${book.getId()}"></td>
+      <td th:text="${book.getTitle()}"></td>
+      <td th:text="${book.getAuthor()}"></td>
+      <td th:text="${book.getPrice()}"></td>
       <td th:text="${book.category.name}"></td>
       <td>
 
         <a th:href="@{/books/edit/{id}(id=${book.id})}">Edit</a>
-
+        <a  th:href="@{/books/add-to-cart}"></a>
         <a th:href="@{/books/delete/{id}(id=${book.id})}"onclick="return confirm('Ban co Chac chan?')">Delete</a>
+        <form th:action="@{/books/add-to-cart}" method="post" class="d-inline">
+          <input type="hidden" name="id" th:value="${book.getId()}">
+          <input type="hidden" name="name"
+
+
+
+                 th:value="${book.getTitle()}">
+          <input type="hidden" name="price"
+                 th:value="${book.getPrice()}">
+          <button type="submit" class="btn btn-success"
+                  onclick="return confirm('Are you sure you want to add this book to cart?')">
+            Add to cart</button>
+        </form>
       </td>
     </tr>
   </table>
 </div>
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center pagination-sm"
+      th:each="i : ${#numbers.sequence(0, totalPages)}">
+    <li class="page-item" th:classappend="${currentPage == i} ? 'active'">
+      <a class="page-link" th:href="@{/books(pageNo=${i})}"
+         th:text="${i}"></a>
+    </li>
+  </ul>
+</nav>
 <th:block th:relace="layout  footer"></th:block>
 <script>
-  const searchInput = document.getElementById('searchInput');
-  const books = document.querySelectorAll('.book');
+  function addToCart() {
+    const id = $("#id").val();
+    const name = $("#name").val();
+    const price = $("#price").val();
+    const quantity = $("#quantity").val();
 
-  searchInput.addEventListener('input', function (event) {
-    const searchText = event.target.value.toLowerCase();
+    var data = {
+      id: id,
+      name: name,
+      price: price,
+      quantity: quantity
+    };
 
-    books.forEach(function (book) {
-      const title = book.querySelector('td:nth-child(2)').textContent.toLowerCase();
-
-      if (title.includes(searchText)) {
-        book.classList.remove('hidden');
-      } else {
-        book.classList.add('hidden');
+    $.ajax({
+      type: "POST",
+      url: "/add-to-cart",
+      data: data,
+      success: function(response) {
+        // Xử lý phản hồi từ máy chủ
+        window.location.href = "/books"; // Chuyển hướng đến trang "/books"
       }
     });
-  });
+  }
+
 </script>
 </body>
 </html>

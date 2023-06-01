@@ -1,14 +1,20 @@
 package com.example.songhuysql.entity;
 
 import com.example.songhuysql.Validator.annotation.ValidCategoryId;
+import com.example.songhuysql.Validator.annotation.ValidUsername;
 import jakarta.persistence.*;
+
+import com.example.songhuysql.Validator.annotation.ValidUserId;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jdk.jfr.Category;
 import lombok.Data;
 import lombok.NonNull;
+import org.hibernate.Hibernate;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.Objects;
 
 @Data
 @Entity
@@ -70,6 +76,24 @@ public class Book {
     @JoinColumn(name = "category_id" )
     @ValidCategoryId
     private category category;
+    @ManyToOne
+    @JoinColumn(name = "user_id" , referencedColumnName = "id")
+    @ValidUserId
+    private User user;
 
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) !=
+                Hibernate.getClass(o)) return false;
+        Book book = (Book) o;
+        return getId() != null && Objects.equals(getId(),
+                book.getId());
+    }
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

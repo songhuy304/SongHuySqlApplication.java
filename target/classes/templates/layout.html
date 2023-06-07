@@ -33,13 +33,14 @@
                     <li class="nav-item"><a class="nav-link" href="/categories/add">Add Category</a> </li>
                     <li class="nav-item"><a class="nav-link" href="/cart">carrt</a> </li>
                     <li sec:authorize="isAuthenticated()">
+                        <span th:text="${#authentication.principal.username}"></span>
                         <form th:action="@{/logout}" method="post">
                             <button class="btn btn-outline-danger" type="submit">Logout</button>
                         </form>
 
                     </li>
                     <li sec:authorize="!isAuthenticated()">
-                        <a class="btn btn-primary"  href="/login"></a>
+                        <a class="btn btn-outline-primary"  href="/login">Đăng Nhập</a>
                     </li>
                 </ul>
             </div>

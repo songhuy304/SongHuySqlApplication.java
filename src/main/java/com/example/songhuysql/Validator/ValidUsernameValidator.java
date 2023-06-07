@@ -16,6 +16,6 @@ public class ValidUsernameValidator implements ConstraintValidator<ValidUsername
     public boolean isValid(String username, ConstraintValidatorContext context) {
         if(userRepository == null)
             return true;
-        return userRepository.findByUsername(username) == null;
+        return userRepository.findByUserName(username) == null;
     }
 }

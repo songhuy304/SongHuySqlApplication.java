@@ -1,6 +1,7 @@
 package com.example.songhuysql.services;
 
 import com.example.songhuysql.entity.User;
+import com.example.songhuysql.repository.IRoleRepository;
 import com.example.songhuysql.repository.IUserRepository;
 
 
@@ -14,8 +15,14 @@ import org.springframework.stereotype.Service;
 public class UserService {
     @Autowired
     private IUserRepository userRepository;
-
-    public void save(User user) {
+    @Autowired
+    private IRoleRepository roleRepository;
+    public void save(User user){
         userRepository.save(user);
+        Long userId = userRepository.getUserIdByUsername(user.getUsername());
+        Long roleId = roleRepository.getRoleIdByName("USER");
+        if (roleId != 0 && userId != 0){
+            userRepository.addRoleToUser(userId,roleId);
+        }
     }
 }

@@ -2,22 +2,27 @@ package com.example.songhuysql.entity;
 
 import com.example.songhuysql.repository.IUserRepository;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 public class CustomUserDetail implements UserDetails {
     private final User user;
-
-    public CustomUserDetail(User user, IUserRepository userRepository) {
-        this.user = user;
+    private final IUserRepository userRepository;
+    public CustomUserDetail(User user, IUserRepository userRepository){
+        this.user=user;
+        this.userRepository=userRepository;
     }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+        return Arrays.stream(userRepository.getRoleOfUser(user.getId()))
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toSet());
     }
 
     @Override

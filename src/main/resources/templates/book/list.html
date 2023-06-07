@@ -11,6 +11,13 @@
 <th:block th:replace="layout :: header"></th:block>
 <div class="container">
   <h1 th:text="${title}"></h1>
+  <form class="d-flex" th:action="@{/books/search}"
+        method="get">
+    <input class="form-control me-2" type="search"
+           placeholder="Search" aria-label="Search" name="keyword">
+    <button class="btn btn-outline-success"
+            type="submit">Search</button>
+  </form>
   <table class="table">
     <tr>
       <th>ID</th>
@@ -26,6 +33,21 @@
       <td th:text="${book.author}"> </td>
       <td th:text="${book.price}"> </td>
       <td th:text="${book.category.name}"></td>
+      <td>
+        <form th:action="@{/books/add-to-cart}" method="post" class="d-inline">
+        <input type="hidden" name="id" th:value="${book.getId()}">
+        <input type="hidden" name="name"
+
+               HƯỚNG DẪN 81
+
+               th:value="${book.getTitle()}">
+        <input type="hidden" name="price"
+               th:value="${book.getPrice()}">
+        <button type="submit" class="btn btn-success"
+                onclick="return confirm('Are you sure you want to
+add this book to cart?')">
+          Add to cart</button>
+      </form></td>
       <td sec:authorize="hasAnyAuthority('ADMIN')">
 
         <a th:href="@{/books/edit/{id}(id=${book.id})}">Edit</a> |
